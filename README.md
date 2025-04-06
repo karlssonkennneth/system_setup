@@ -28,6 +28,12 @@ https://ohmyz.sh/#install
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
+### powerlevel10k
+```console
+brew install powerlevel10k
+echo "source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme" >>~/.zshrc
+```
+
 ## Yazi
 Install theme for Yazi
 ```console
