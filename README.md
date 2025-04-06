@@ -11,7 +11,6 @@ Create folders for the different configurations that you want and run:
 
 ```console
 $ stow "folder"
-foo
 ```
 There are other configuration files that is not handled by stow, like Brewfile
 and my Python requirement files.
