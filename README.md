@@ -5,13 +5,33 @@ machines.
 
 I am staring with GNU Stow, the long term plan is to switch to Home Manager at
 some point
+## Brew
+Start with installing everything in the Brewfile
 
-## How to
+## GNU Stow 
 Create folders for the different configurations that you want and run:
 
 ```console
 $ stow "folder"
 ```
-There are other configuration files that is not handled by stow, like Brewfile
-and my Python requirement files.
+For instance if you want to add the configuration for .zshrc:
 
+```console
+$ stow zsh
+```
+
+## Zsh
+Install oh-my-zsh
+https://ohmyz.sh/#install
+
+```console
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+## Yazi
+Install theme for Yazi
+```console
+ya pack -a BennyOe/tokyo-night
+```
+
+## Python
