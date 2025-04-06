@@ -132,7 +132,7 @@ alias copylast="tail -n 1 | xclip -selection clipboard"
 # Fix slow terminal
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 # neofetch # Add system info when starting terminal
-source /Users/KKARLS28/repos/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source /Users/KKARLS28/repos/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
