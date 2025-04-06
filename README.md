@@ -5,8 +5,16 @@ machines.
 
 I am staring with GNU Stow, the long term plan is to switch to Home Manager at
 some point
-## Brew
+
 Start with installing everything in the Brewfile
+
+## Brew
+After stowing the Brew folder
+
+```console
+brew bundle install
+```
+Looks for ~/Brewfile and installs its contents
 
 ## GNU Stow 
 Create folders for the different configurations that you want and run:
