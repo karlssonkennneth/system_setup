@@ -50,7 +50,7 @@ source $ZSH/oh-my-zsh.sh
 # Needed for fzf R search + plus plugin above
 export FZF_BASE="/opt/homebrew/opt/fzf"
 # vi mode
-bindkey -v
+# bindkey -v
 export KEYTIMEOUT=1
 
 # bind the '§' to the sudo plugin, it is not compatible with vi-mode 
@@ -82,6 +82,7 @@ alias ll="eza -al --icons"
 
 
 # Alias for edit files
+alias editclaude="nvim ~/.claude/CLAUDE.md"
 alias ezsh="nvim ~/.zshrc"
 alias editzsh="nvim ~/.zshrc"
 alias elazy="nvim ~/.config/nvim"
@@ -141,3 +142,13 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 # Created by `pipx` on 2023-09-04 07:30:04
 export PATH="$PATH:/Users/KKARLS28/.local/bin"
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# Start ssh-agent and add SSH key with macOS keychain support
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+  eval "$(ssh-agent -s)"
+fi
+
+# Add the key to the agent and use keychain support (replace path if needed)
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519 2>/dev/null
+
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"

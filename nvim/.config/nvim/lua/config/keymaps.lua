@@ -12,3 +12,5 @@ vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>", opts)
 -- Set my > and < keys on Swedish keyboard to indentation
 vim.keymap.set("n", "§", ">>", { noremap = true, silent = true })
 vim.keymap.set("n", "°", "<<", { noremap = true, silent = true })
+
+vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
