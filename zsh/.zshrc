@@ -49,6 +49,8 @@ source $ZSH/oh-my-zsh.sh
 
 # Needed for fzf R search + plus plugin above
 export FZF_BASE="/opt/homebrew/opt/fzf"
+# Disable fzf Ctrl+T
+export FZF_CTRL_T_COMMAND=""
 # vi mode
 # bindkey -v
 export KEYTIMEOUT=1
