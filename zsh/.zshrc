@@ -76,8 +76,8 @@ alias vim="nvim"
 alias cat="bat"
 alias fd="fd -u"
 alias rg="rg -u"
-alias l="eza -1 --icons"
-alias ls="eza -1 --icons" 
+alias l="eza -1a --icons"
+alias ls="eza -1a --icons" 
 alias ll="eza -al --icons"
 
 
