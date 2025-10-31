@@ -121,6 +121,7 @@ alias analyze="(cd ~/repos/icup_lightweight_S/vendor/volvocars/tools/ci/lib && ~
 
 # Alias for running programs
 alias commitcheck="~/repos/icup_lightweight_S/vendor/volvocars/tools/commit-check/bin/commit-check"
+alias runmypy="python3.8 /Users/KKARLS28/repos/icup_lightweight_S/vendor/volvocars/tools/ci/lib/core/artinfci/commit_check/run_mypy_in_workspace_level.py --local --run-for-cwd"
 
 # Alias for convenience
 alias copylast="tail -n 1 | xclip -selection clipboard"
