@@ -72,6 +72,8 @@ alias dev311="source ~/repos/dev/bin/activate"
 alias vp38="source ~/repos/py_38_dev_env/dev_env/bin/activate"
 alias dev38="source ~/repos/py_38_dev_env/dev_env/bin/activate"
 alias startenv="pipenv shell"
+alias devenv="pipenv shell"
+alias setupenv="pipenv shell"
 
 # Alias for programs replacing standard programs
 alias vim="nvim"
