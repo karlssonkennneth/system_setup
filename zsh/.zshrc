@@ -120,6 +120,7 @@ alias sharedlibs="~/repos/icup_lightweight_S/jenkins_shared_libs"
 alias commit_eval="~/repos/icup_lightweight_S/vendor/volvocars/tools/ci/lib/core/artinfci/commit_evaluator"
 alias cidocker="~/repos/icup_lightweight_S/vendor/volvocars/tools/docker_image/run.sh --multiuser"
 alias analyze="(cd ~/repos/icup_lightweight_S/vendor/volvocars/tools/ci/lib && ~/repos/icup_lightweight/vendor/volvocars/tools/ci/jenkins/ci_docker_run.sh ./analyze.sh) "
+alias runmypy="python3.8 ~/repos/icup_lightweight_S/vendor/volvocars/tools/ci/lib/core/artinfci/commit_check --local --run-for-cwd"
 
 # Alias for running programs
 alias commitcheck="~/repos/icup_lightweight_S/vendor/volvocars/tools/commit-check/bin/commit-check"
@@ -157,3 +158,6 @@ fi
 ssh-add --apple-use-keychain ~/.ssh/id_ed25519 2>/dev/null
 
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
+# Created by `userpath` on 2026-01-28 16:02:08
+export PATH="$PATH:/Users/KKARLS28/Library/Application Support/hatch/pythons/3.10/python/bin"
