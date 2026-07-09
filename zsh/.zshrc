@@ -19,6 +19,7 @@ fi
 export ZSH="$HOME/.oh-my-zsh"
 export EDITOR="nvim"
 PATH=$(brew --prefix)/opt/findutils/libexec/gnubin:$PATH:$HOME/.config/emacs/bin:$HOME/bin
+export PATH="$HOME/.config/emacs/bin:$PATH"
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
@@ -125,6 +126,8 @@ alias runmypy="python3.8 ~/repos/icup_lightweight_S/vendor/volvocars/tools/ci/li
 # Alias for running programs
 alias commitcheck="~/repos/icup_lightweight_S/vendor/volvocars/tools/commit-check/bin/commit-check"
 alias runmypy="python3.8 /Users/KKARLS28/repos/icup_lightweight_S/vendor/volvocars/tools/ci/lib/core/artinfci/commit_check/run_mypy_in_workspace_level.py --local --run-for-cwd"
+alias edoom='open -a Emacs'
+alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs"
 
 # Alias for convenience
 alias copylast="tail -n 1 | xclip -selection clipboard"
