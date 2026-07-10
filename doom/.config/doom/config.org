@@ -41,3 +41,25 @@
 (setq org-modern-table t)
 (add-hook 'org-mode-hook #'hl-todo-mode)
 #+end_src
+
+* Email
+** Load path
+#+begin_src emacs-lisp
+(add-to-list 'load-path "/opt/homebrew/share/emacs/site-lisp/mu/mu4e")
+#+end_src
+** mu4e
+#+begin_src emacs-lisp
+(after! mu4e
+  (setq mu4e-update-interval (* 10 60)
+        mu4e-get-mail-command "mbsync proton"
+        mu4e-maildir "~/Mail"
+        mu4e-drafts-folder "/proton/Drafts"
+        mu4e-sent-folder "/proton/Sent"
+        mu4e-trash-folder "/proton/Trash"
+        mu4e-refile-folder "/proton/Archive"
+        user-mail-address "kennethkarlsson81@protonmail.com"
+        user-full-name "Kenneth Karlsson"
+        smtpmail-smtp-server "127.0.0.1"
+        smtpmail-smtp-service 1025
+        smtpmail-stream-type 'plain))
+#+end_src
