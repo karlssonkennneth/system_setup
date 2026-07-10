@@ -1,0 +1,22 @@
+IMAPAccount proton
+Host 127.0.0.1
+Port 1143
+User kennethkarlsson81@protonmail.com
+PassCmd "gpg --quiet --decrypt ~/.authinfo.gpg | grep 'port 1143' | awk '{print $6}'"
+TLSType None
+AuthMechs LOGIN
+
+IMAPStore proton-remote
+Account proton
+
+MaildirStore proton-local
+Subfolders Verbatim
+Path ~/Mail/proton/
+Inbox ~/Mail/proton/Inbox
+
+Channel proton
+Far :proton-remote:
+Near :proton-local:
+Patterns *
+Create Near
+SyncState *
