@@ -53,3 +53,6 @@
 ;; (unpin! t)
 
 (package! mu4e :built-in 'prefer)
+
+(package! copilot
+  :recipe (:host github :repo "copilot-emacs/copilot.el"))

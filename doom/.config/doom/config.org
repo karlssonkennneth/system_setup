@@ -87,6 +87,23 @@ group.
       "s-H" #'centaur-tabs-backward-group)
 #+end_src
 
+* Copilot
+GitHub Copilot inline completions, powered by the official
+=@github/copilot-language-server=. Enabled in all programming
+buffers (=prog-mode=).
+
+The first time you use it you need to run these two commands once:
+- =M-x copilot-install-server= — downloads the language server binary
+- =M-x copilot-login= — authenticates with your GitHub account
+
+#+begin_src emacs-lisp
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("C-<tab>" . copilot-accept-completion)
+              ("C-TAB" . copilot-accept-completion)))
+#+end_src
+
 * Email
 ** Load path
 #+begin_src emacs-lisp
