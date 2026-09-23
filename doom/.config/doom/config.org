@@ -42,6 +42,51 @@
 (add-hook 'org-mode-hook #'hl-todo-mode)
 #+end_src
 
+* Keybindings
+** Tab switching
+The tabs in the top tab bar are managed by =centaur-tabs= and are
+automatically organized into groups depending on buffer type:
+
+- A file belonging to a Projectile project is placed in the group
+  ="Project: /path/to/project"=.
+- A vterm buffer (terminal) has no associated filename, so it falls
+  into the default group (e.g. ="General"=) instead of the
+  project's group, *even if* you opened it from within that
+  project's directory.
+- Other special buffers (Magit, Dired, Org, Elisp, etc.) get their
+  own dedicated groups regardless of project.
+
+This means you'll typically see at least two groups: one for your
+open project files, and another for your terminals.
+
+*** Switching tabs within the same group
+- =Cmd+L= (~s-l~) → next tab (e.g. cycle through open files in the
+  same project)
+- =Cmd+H= (~s-h~) → previous tab
+
+*** Switching between groups (e.g. between projects, or between files and terminals)
+- =Cmd+Shift+L= (~s-L~) → next group
+- =Cmd+Shift+H= (~s-H~) → previous group
+
+Example: if you have the "myapp" project open with three files, and
+a vterm terminal opened from that same directory, =Cmd+L=/=Cmd+H=
+will only cycle between the three files. To reach the terminal tab,
+use =Cmd+Shift+L= or =Cmd+Shift+H= to jump to the terminal's group,
+then =Cmd+L=/=Cmd+H= if you have multiple terminals open in that
+group.
+
+*** Opening a new terminal
+- =Cmd+T= (~s-t~) → opens a new vterm tab (always creates a new
+  instance, never reuses an existing terminal buffer)
+
+#+begin_src emacs-lisp
+(map! "s-l" #'centaur-tabs-forward
+      "s-h" #'centaur-tabs-backward
+      "s-t" (cmd! (+vterm/here t))
+      "s-L" #'centaur-tabs-forward-group
+      "s-H" #'centaur-tabs-backward-group)
+#+end_src
+
 * Email
 ** Load path
 #+begin_src emacs-lisp
