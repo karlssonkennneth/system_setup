@@ -155,4 +155,17 @@ rm ~/.authinfo
 Credentials to add (get passwords from Bitwarden):
 - **Proton Bridge password** — item: `Proton Mail Bridge`
 
+## Search (fd / ripgrep)
+
+```console
+stow search
+```
+
+Installs `~/.ignore`, which prunes caches, media archives and build artifacts
+from searches rooted at `~` (Doom's `SPC SPC`, `SPC /`, `SPC s p`). Takes the
+home index from ~795k files to ~8.6k.
+
+Only affects searches started from `~` — searching inside a project is
+unaffected, since fd and ripgrep read ignore files from the search root down.
+
 ## Python

@@ -1,0 +1,61 @@
+# ~/.ignore — read by fd and ripgrep (so: Doom's SPC SPC, SPC / , SPC s p)
+# Only applies to searches rooted at ~ ; searching inside a project is unaffected.
+# Managed by stow: `stow search` from ~/system_setup
+
+# ---- macOS ----
+Library/
+.Trash/
+*.app/
+
+# ---- Media & mail archives ----
+Pictures/
+Sync/
+Mail/
+.mcf/
+
+# ---- Caches & package stores ----
+.cache/
+.local/
+.npm/
+.ollama/
+.tldrc/
+.sbt/
+.oh-my-zsh/
+.thumbnails/
+.azure/
+.codex/
+.vscode/
+.vscode-shared/
+go/pkg/
+
+# ---- Editor / tool installs (keeps ~/.config/doom findable) ----
+# .emacs.d is a symlink to .config/emacs; both names need ignoring
+# because Doom runs fd with --follow.
+.config/emacs/
+.emacs.d/
+.config/raycast/
+.config/opencode/
+
+# ---- Build artifacts, anywhere ----
+.git/
+node_modules/
+__pycache__/
+.venv/
+venv/
+target/
+dist/
+build/
+.next/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# ---- Machine-specific ----
+# Not portable across machines, but harmless where they match nothing.
+python_virtualenv_313/
+Local Sites/
+Desktop/Old Firefox Data/
+# tldr clone: keep pages/, drop the 47 translations.
+# (pages.en is a symlink to pages/, so excluding it avoids duplicates.)
+repos/tldr/pages.*/
