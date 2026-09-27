@@ -125,3 +125,19 @@ The first time you use it you need to run these two commands once:
         smtpmail-smtp-service 1025
         smtpmail-stream-type 'plain))
 #+end_src
+
+* Projectile
+** Follow symlinks when indexing
+Doom indexes project files with =fd -tl=, which /lists/ symlinks but does not
+descend into them. Because the stow-managed configs are symlinks
+(=~/.config/doom= → =~/system_setup/doom/.config/doom=), their contents were
+missing from ~SPC SPC~ under those paths.
+
+Adding =-L= makes fd follow them. Stowed files then appear twice, once per
+path; the noise is small here (~50 extra entries in =~=) because =~/.ignore=
+already prunes the large symlinked trees.
+
+#+begin_src emacs-lisp
+(after! projectile
+  (setq projectile-git-fd-args (concat "-L " projectile-git-fd-args)))
+#+end_src
