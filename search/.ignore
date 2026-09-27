@@ -28,9 +28,11 @@ Mail/
 .vscode-shared/
 go/pkg/
 
-# ---- Editor / tool installs (keeps ~/.config/doom findable) ----
-# .emacs.d is a symlink to .config/emacs; both names need ignoring
-# because Doom runs fd with --follow.
+# ---- Editor / tool installs ----
+# .config/emacs is the Doom install (~30k files). .emacs.d is a symlink to it,
+# listed too for tools that DO follow symlinks (plain rg, fd -L).
+# Doom's own indexing passes -tl, which lists symlinks without descending
+# into them, so it never reaches the Doom tree via .emacs.d anyway.
 .config/emacs/
 .emacs.d/
 .config/raycast/

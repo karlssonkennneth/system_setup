@@ -163,9 +163,14 @@ stow search
 
 Installs `~/.ignore`, which prunes caches, media archives and build artifacts
 from searches rooted at `~` (Doom's `SPC SPC`, `SPC /`, `SPC s p`). Takes the
-home index from ~795k files to ~8.6k.
+home index from ~777k files to ~8.6k, and `fd` from 27s to 0.15s.
 
 Only affects searches started from `~` — searching inside a project is
 unaffected, since fd and ripgrep read ignore files from the search root down.
+
+Note: Doom indexes with `fd -tl`, which lists symlinks but does not descend
+into them. So `~/.config/doom/config.org` is not reachable by that path in
+`SPC SPC`; it shows up under its real path, `system_setup/doom/.config/doom/`.
+Use `SPC f p` (`doom/find-file-in-private-config`) to jump straight there.
 
 ## Python
