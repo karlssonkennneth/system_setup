@@ -218,6 +218,12 @@ that file sets =my/work-machine-p=. Copy =local.el.example= to =local.el= on the
 work machine; leave it absent everywhere else. =local.el= is gitignored, so no
 machine-identifying details are ever committed.
 
+With Doom workspaces enabled, the tabs module only lists buffers in the current
+workspace. =agent-shell= creates its buffer before displaying it, so the usual
+buffer-switch hook may not register it. Add it when the shell is initialized
+using Doom's existing workspace helper; this also covers new shells started
+without switching to them.
+
 #+begin_src emacs-lisp
 (defvar my/work-machine-p nil
   "Non-nil on the work machine, where GitHub Copilot replaces Claude.
@@ -235,6 +241,10 @@ Set this in the untracked `local.el'; see `local.el.example'.")
 
 (setq agent-shell-preferred-agent-config
       (cons 'preselect (if my/work-machine-p 'copilot 'claude-code)))
+
+(after! agent-shell
+  (when (modulep! :ui workspaces)
+    (add-hook 'agent-shell-mode-hook #'+workspaces-add-current-buffer-h)))
 
 (defun my/agent-shell-start-default ()
   "Start this machine's default agent shell (Copilot at work, else Claude)."
