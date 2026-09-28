@@ -49,12 +49,36 @@ ya pack -a BennyOe/tokyo-night
 ```
 
 ## Doom Emacs
-Install Emacs and Doom:
+Install Emacs and Doom. `emacs-plus@31` is built from source (no bottle) and
+enables native compilation unconditionally (`--with-native-compilation=aot`):
 
 ```console
-brew install --cask emacs
+stow emacs-plus                              # icon config, must precede the build
+brew install d12frosted/emacs-plus/emacs-plus@31
 git clone https://github.com/doomemacs/doomemacs ~/.config/emacs
 ~/.config/emacs/bin/doom install
+```
+
+`stow emacs-plus` installs `~/.config/emacs-plus/build.yml`, which selects the
+`modern-doom3` icon. The formula reads it both at build time and at post-install,
+so the icon can be changed later without a rebuild:
+
+```console
+brew postinstall emacs-plus@31
+```
+
+The app lives in the keg, not `/Applications`. Link it so Finder and the
+`emacs` alias in `.zshrc` both find it — use the `opt` path, which survives
+version bumps:
+
+```console
+ln -s /opt/homebrew/opt/emacs-plus@31/Emacs.app /Applications/Emacs.app
+```
+
+After changing Emacs versions, packages must be rebuilt for the new version:
+
+```console
+~/.config/emacs/bin/doom sync --rebuild
 ```
 
 Stow the config, then sync:

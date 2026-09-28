@@ -1,0 +1,10 @@
+# emacs-plus community build config.
+# Consumed by the formula at build time and again at post-install, so the icon
+# can be changed without a source rebuild:
+#   brew postinstall emacs-plus@31
+#
+# Icon names come from the tap's registry:
+#   /opt/homebrew/Library/Taps/d12frosted/homebrew-emacs-plus/community/icons
+# `modern-doom3` is the same icon the old Brewfile requested as
+# `with-modern-doom3-icon`, an arg that no longer exists on @31.
+icon: modern-doom3

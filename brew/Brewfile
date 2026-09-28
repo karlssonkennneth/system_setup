@@ -64,7 +64,9 @@ brew "wget"
 brew "xclip"
 brew "yazi"
 brew "zsh-syntax-highlighting"
-brew "d12frosted/emacs-plus/emacs-plus@29", args: ["with-modern-doom3-icon", "with-native-comp"]
+# Native compilation is unconditional on @31; the icon moved to
+# ~/.config/emacs-plus/build.yml (stow package: emacs-plus).
+brew "d12frosted/emacs-plus/emacs-plus@31"
 brew "felixkratz/formulae/borders"
 cask "font-fira-code-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
