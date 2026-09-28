@@ -1,7 +1,6 @@
 tap "d12frosted/emacs-plus"
 tap "felixkratz/formulae"
 tap "homebrew/services"
-tap "railwaycat/emacsmacport"
 brew "glib"
 brew "at-spi2-core"
 brew "azure-cli"
