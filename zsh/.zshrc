@@ -92,7 +92,7 @@ alias ezsh="nvim ~/.zshrc"
 alias editzsh="nvim ~/.zshrc"
 alias elazy="nvim ~/.config/nvim"
 alias fvim="vim \$(find ~/repos/icup_lightweight_S/vendor/volvocars/tools/docker_build ~/repos/icup_lightweight_S/vendor/volvocars/tools/docker_image ~/repos/icup_lightweight_S/vendor/volvocars/tools/ci/ -type f | fzf)"
-alias fcode="code \$(find ~/repos/icup_lightweight_S/vendor/volvocars/tools/docker_build /Users/KKARLS28/repos/spa2_lightweight/tools ~/repos/icup_lightweight_S/vendor/volvocars/tools/docker_image ~/repos/icup_lightweight_S/vendor/volvocars/tools/ci/ -type f | fzf)"
+alias fcode="code \$(find ~/repos/icup_lightweight_S/vendor/volvocars/tools/docker_build ~/repos/spa2_lightweight/tools ~/repos/icup_lightweight_S/vendor/volvocars/tools/docker_image ~/repos/icup_lightweight_S/vendor/volvocars/tools/ci/ -type f | fzf)"
 alias update="source ~/.zshrc"
 alias reload="source ~/.zshrc"
 alias configure="source ~/.zshrc"
@@ -125,7 +125,7 @@ alias runmypy="python3.8 ~/repos/icup_lightweight_S/vendor/volvocars/tools/ci/li
 
 # Alias for running programs
 alias commitcheck="~/repos/icup_lightweight_S/vendor/volvocars/tools/commit-check/bin/commit-check"
-alias runmypy="python3.8 /Users/KKARLS28/repos/icup_lightweight_S/vendor/volvocars/tools/ci/lib/core/artinfci/commit_check/run_mypy_in_workspace_level.py --local --run-for-cwd"
+alias runmypy="python3.8 ~/repos/icup_lightweight_S/vendor/volvocars/tools/ci/lib/core/artinfci/commit_check/run_mypy_in_workspace_level.py --local --run-for-cwd"
 alias edoom='open -a Emacs'
 alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs"
 
@@ -142,14 +142,14 @@ alias copylast="tail -n 1 | xclip -selection clipboard"
 # Fix slow terminal
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 # neofetch # Add system info when starting terminal
-# source /Users/KKARLS28/repos/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source ~/repos/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 # Created by `pipx` on 2023-09-04 07:30:04
-export PATH="$PATH:/Users/KKARLS28/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
 # Start ssh-agent and add SSH key with macOS keychain support
@@ -163,4 +163,43 @@ ssh-add --apple-use-keychain ~/.ssh/id_ed25519 2>/dev/null
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
 # Created by `userpath` on 2026-01-28 16:02:08
-export PATH="$PATH:/Users/KKARLS28/Library/Application Support/hatch/pythons/3.10/python/bin"
+export PATH="$PATH:$HOME/Library/Application Support/hatch/pythons/3.10/python/bin"
+
+# vterm (Emacs) shell-side integration.
+# Without this the vterm buffer's `default-directory' never follows the shell,
+# so Magit, find-file and projectile all act on the directory vterm was opened
+# in rather than the one you have cd'd to.
+if [[ "$INSIDE_EMACS" = "vterm" ]]; then
+  # Move the first prompt below the tab bar without adding lines at each prompt.
+  printf '\r\n'
+
+  vterm_printf() {
+    if [ -n "$TMUX" ] && { [ "${TERM%%-*}" = "tmux" ] || [ "${TERM%%-*}" = "screen" ]; }; then
+      printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+    elif [ "${TERM%%-*}" = "screen" ]; then
+      printf "\eP\e]%s\007\e\\" "$1"
+    else
+      printf "\e]%s\e\\" "$1"
+    fi
+  }
+
+  # Reports the working directory to vterm before each prompt. A precmd hook
+  # rather than an addition to $PROMPT, which powerlevel10k rewrites.
+  vterm_report_cwd() {
+    vterm_printf "51;A$(whoami)@$(hostname):$(pwd)"
+  }
+  autoload -Uz add-zsh-hook
+  add-zsh-hook precmd vterm_report_cwd
+
+  # Lets Emacs run commands sent from the shell, e.g. the `clear' below, which
+  # drops vterm's scrollback instead of only blanking the visible screen.
+  vterm_cmd() {
+    local vterm_elisp=""
+    while [ $# -gt 0 ]; do
+      vterm_elisp="$vterm_elisp""$(printf '"%s" ' "$(printf "%s" "$1" | sed -e 's|\\|\\\\|g' -e 's|"|\\"|g')")"
+      shift
+    done
+    vterm_printf "51;E$vterm_elisp"
+  }
+  alias clear='vterm_cmd clear-scrollback'
+fi

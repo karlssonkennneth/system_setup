@@ -19,6 +19,28 @@
 
 #+end_src
 
+** Frame placement
+Open the frame on the left half of the current monitor. =frame-monitor-workarea=
+excludes the menu bar and Dock; the outer/inner difference accounts for the
+title bar and borders. Also available as =M-x my/frame-left-half=.
+#+begin_src emacs-lisp
+(defun my/frame-left-half (&optional frame)
+  "Place FRAME (default: selected) on the left half of its monitor."
+  (interactive)
+  (let ((frame (or frame (selected-frame))))
+    (when (display-graphic-p frame)
+      (setq frame-resize-pixelwise t)
+      (let* ((wa (frame-monitor-workarea frame))
+             (x (nth 0 wa)) (y (nth 1 wa))
+             (w (/ (nth 2 wa) 2)) (h (nth 3 wa))
+             (dw (- (frame-outer-width frame) (frame-inner-width frame)))
+             (dh (- (frame-outer-height frame) (frame-inner-height frame))))
+        (set-frame-position frame x y)
+        (set-frame-size frame (- w dw) (- h dh) t)))))
+
+(add-hook 'window-setup-hook #'my/frame-left-half)
+#+end_src
+
 * Org
 ** Headers
 #+begin_src emacs-lisp
@@ -79,12 +101,29 @@ group.
 - =Cmd+T= (~s-t~) → opens a new vterm tab (always creates a new
   instance, never reuses an existing terminal buffer)
 
+*** Loading the tab bar eagerly
+Doom enables =centaur-tabs-mode= from =doom-first-file-hook=, i.e. not until the
+first *file* is opened. A session spent only in vterm, Magit or an agent shell
+therefore never triggers it, and =s-l=/=s-h= do nothing at all -- silently, since
+the keys stay bound to autoloaded commands either way.
+
+Enabling it from =doom-after-init-hook= instead means the tab bar is there from
+startup. Calling =centaur-tabs-mode= as a hook function enables it (a nil
+argument enables rather than toggles outside interactive use), and the command is
+autoloaded, so this pulls in the package too. Doom's own hook still runs later
+and is harmless: enabling an already-enabled mode is a no-op.
+
 #+begin_src emacs-lisp
 (map! "s-l" #'centaur-tabs-forward
       "s-h" #'centaur-tabs-backward
       "s-t" (cmd! (+vterm/here t))
       "s-L" #'centaur-tabs-forward-group
       "s-H" #'centaur-tabs-backward-group)
+
+;; Doom enables centaur-tabs from `doom-first-file-hook', so a session spent
+;; only in vterm or Magit never gets a tab bar and the keys above do nothing.
+;; Enable it at startup instead; Doom's later call is a harmless no-op.
+(add-hook 'doom-after-init-hook #'centaur-tabs-mode)
 #+end_src
 
 * Copilot
@@ -168,12 +207,46 @@ but the per-agent entry points in =agent-shell-anthropic.el= carry no autoload
 cookie, so binding one directly fails with =void-function= until that file is
 loaded.
 
+** Per-machine default agent
+The work machine uses GitHub Copilot (=copilot --acp=); every other machine uses
+Claude Code. =SPC o l c= starts the machine's default agent, and =SPC o l C=
+still opens the picker with that agent preselected.
+
+Which machine is which is *not* recorded in this repository. Instead,
+=config.el= loads an untracked =local.el= from =doom-user-dir= if it exists, and
+that file sets =my/work-machine-p=. Copy =local.el.example= to =local.el= on the
+work machine; leave it absent everywhere else. =local.el= is gitignored, so no
+machine-identifying details are ever committed.
+
 #+begin_src emacs-lisp
+(defvar my/work-machine-p nil
+  "Non-nil on the work machine, where GitHub Copilot replaces Claude.
+Set this in the untracked `local.el'; see `local.el.example'.")
+
+;; Machine-local overrides live in an untracked `local.el' next to this file,
+;; so nothing machine-identifying is ever committed. Present only on the work
+;; machine; everywhere else the defaults above stand. See `local.el.example'.
+(let ((local-config (expand-file-name "local.el" doom-user-dir)))
+  (when (file-exists-p local-config)
+    (load local-config nil 'nomessage)))
+
 (autoload 'agent-shell-anthropic-start-claude-code "agent-shell-anthropic" nil t)
+(autoload 'agent-shell-github-start-copilot "agent-shell-github" nil t)
+
+(setq agent-shell-preferred-agent-config
+      (cons 'preselect (if my/work-machine-p 'copilot 'claude-code)))
+
+(defun my/agent-shell-start-default ()
+  "Start this machine's default agent shell (Copilot at work, else Claude)."
+  (interactive)
+  (if my/work-machine-p
+      (agent-shell-github-start-copilot)
+    (agent-shell-anthropic-start-claude-code)))
 
 (map! :leader
       (:prefix ("o" . "open")
        (:prefix ("l" . "llm")
-        :desc "Claude agent shell"   "c" #'agent-shell-anthropic-start-claude-code
+        :desc (if my/work-machine-p "Copilot agent shell" "Claude agent shell")
+        "c" #'my/agent-shell-start-default
         :desc "Agent shell (choose)" "C" #'agent-shell)))
 #+end_src

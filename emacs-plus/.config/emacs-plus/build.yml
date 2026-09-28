@@ -2,6 +2,7 @@
 # Consumed by the formula at build time and again at post-install, so the icon
 # can be changed without a source rebuild:
 #   brew postinstall emacs-plus@31
+# The formula's current stable release is Emacs 31.1.
 #
 # Icon names come from the tap's registry:
 #   /opt/homebrew/Library/Taps/d12frosted/homebrew-emacs-plus/community/icons

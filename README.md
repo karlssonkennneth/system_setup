@@ -49,7 +49,8 @@ ya pack -a BennyOe/tokyo-night
 ```
 
 ## Doom Emacs
-Install Emacs and Doom. `emacs-plus@31` is built from source (no bottle) and
+Install Emacs 31.1 and Doom. The `emacs-plus@31` formula currently provides
+Emacs 31.1, is built from source (no bottle), and
 enables native compilation unconditionally (`--with-native-compilation=aot`):
 
 ```console
@@ -106,6 +107,38 @@ Install the font:
 ```console
 brew install --cask font-jetbrains-mono-nerd-font
 ```
+
+Install the ACP bridge used by `agent-shell` (needs `node` from the Brewfile).
+The package itself comes from `packages.el`, but it does nothing without this:
+
+```console
+npm install -g @agentclientprotocol/claude-agent-acp
+```
+
+### Machine-local settings
+
+Some settings differ between machines — which LLM agent `SPC o l c` starts, for
+instance. Those differences are deliberately kept out of this repository, since
+it is public and the details would identify the machine and its owner.
+
+Instead, `config.el` loads an untracked `local.el` from `~/.config/doom/` if the
+file exists, and silently skips it otherwise. `local.el` is gitignored, so
+nothing machine-specific can be committed by accident.
+
+Set it up on a machine that needs overrides:
+
+```console
+cd ~/.config/doom
+cp local.el.example local.el
+```
+
+Then edit `local.el`. `local.el.example` is tracked and documents every
+available variable, so it doubles as the reference for what can be overridden.
+
+Machines needing no overrides — the personal one — are left alone: with no
+`local.el` present, the defaults in `config.el` apply. Every variable therefore
+has a working default, and `local.el` only ever changes behaviour, never
+enables it.
 
 ## mbsync
 mbsync (isync) syncs email from IMAP servers to a local maildir on disk. Doom Emacs reads email through mu4e, which needs mail stored locally — mbsync is what keeps it in sync.
