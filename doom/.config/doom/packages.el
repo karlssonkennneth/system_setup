@@ -56,3 +56,8 @@
 
 (package! copilot
   :recipe (:host github :repo "copilot-emacs/copilot.el"))
+
+;; ACP-powered agent shells (Claude Code, Codex, Gemini, ...).
+;; Pulls in acp + shell-maker as dependencies. Requires the external bridge:
+;;   npm install -g @agentclientprotocol/claude-agent-acp
+(package! agent-shell)

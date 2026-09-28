@@ -141,3 +141,34 @@ already prunes the large symlinked trees.
 (after! projectile
   (setq projectile-git-fd-args (concat "-L " projectile-git-fd-args)))
 #+end_src
+
+* AI Agents
+** agent-shell
+[[https://github.com/xenodium/agent-shell][agent-shell]] runs coding agents in an Emacs buffer over ACP (Agent Client
+Protocol), so Claude Code, Codex and Gemini all share one interface. The
+package is declared in =packages.el=; it needs an external bridge binary:
+
+#+begin_src sh :tangle no
+npm install -g @agentclientprotocol/claude-agent-acp
+#+end_src
+
+No authentication setup is needed for Claude: =agent-shell-anthropic-authentication=
+already defaults to =(agent-shell-anthropic-make-authentication :login t)=, which
+reuses the Claude Code subscription login rather than an API key.
+
+Bound under the existing =SPC o l= (llm) prefix, next to the gptel bindings.
+
+Note the explicit =autoload=: =agent-shell= itself is autoloaded by the package,
+but the per-agent entry points in =agent-shell-anthropic.el= carry no autoload
+cookie, so binding one directly fails with =void-function= until that file is
+loaded.
+
+#+begin_src emacs-lisp
+(autoload 'agent-shell-anthropic-start-claude-code "agent-shell-anthropic" nil t)
+
+(map! :leader
+      (:prefix ("o" . "open")
+       (:prefix ("l" . "llm")
+        :desc "Claude agent shell"   "c" #'agent-shell-anthropic-start-claude-code
+        :desc "Agent shell (choose)" "C" #'agent-shell)))
+#+end_src
