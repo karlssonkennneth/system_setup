@@ -67,13 +67,26 @@ so the icon can be changed later without a rebuild:
 brew postinstall emacs-plus@31
 ```
 
-The app lives in the keg, not `/Applications`. Link it so Finder and the
+The app lives in the keg, not `/Applications`. Link it so launchers and the
 `emacs` alias in `.zshrc` both find it — use the `opt` path, which survives
-version bumps:
+version bumps, then register it with Launch Services:
 
 ```console
 ln -s /opt/homebrew/opt/emacs-plus@31/Emacs.app /Applications/Emacs.app
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \
+  -f /opt/homebrew/opt/emacs-plus@31/Emacs.app
 ```
+
+Re-run the `lsregister` line after `brew upgrade emacs-plus@31`: it resolves
+the symlink and records the versioned Cellar path, which the upgrade replaces.
+
+A symlink is deliberate over `cp -r`. Spotlight will not index a symlinked
+bundle (`mdfind kMDItemFSName == 'Emacs.app'` comes back empty), but Raycast
+finds it, and the symlink tracks upgrades instead of going stale.
+
+Never leave two Emacs bundles installed: both declare the `org.gnu.Emacs`
+bundle id, and macOS resolves `Emacs` to whichever it likes regardless of what
+is registered.
 
 After changing Emacs versions, packages must be rebuilt for the new version:
 
