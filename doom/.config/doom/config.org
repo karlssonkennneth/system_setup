@@ -137,9 +137,14 @@ Adding =-L= makes fd follow them. Stowed files then appear twice, once per
 path; the noise is small here (~50 extra entries in =~=) because =~/.ignore=
 already prunes the large symlinked trees.
 
+The guard matters: =after!= re-runs whenever =config.el= is reloaded (=SPC h r r=),
+so an unguarded =concat= would prepend =-L= again on every reload.
+
 #+begin_src emacs-lisp
 (after! projectile
-  (setq projectile-git-fd-args (concat "-L " projectile-git-fd-args)))
+  (let ((case-fold-search nil))
+    (unless (string-match-p "\\(?:^\\| \\)-L\\(?: \\|$\\)" projectile-git-fd-args)
+      (setq projectile-git-fd-args (concat "-L " projectile-git-fd-args)))))
 #+end_src
 
 * AI Agents
