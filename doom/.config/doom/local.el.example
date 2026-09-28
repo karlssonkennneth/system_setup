@@ -1,0 +1,34 @@
+;;; local.el.example -*- mode: emacs-lisp; lexical-binding: t; -*-
+
+;; Reference for machine-local Doom settings.
+;;
+;; Copy this file next to it as `local.el' on any machine that needs to deviate
+;; from the defaults:
+;;
+;;     cd ~/.config/doom && cp local.el.example local.el
+;;
+;; `local.el' is gitignored; this example is tracked. That split is the whole
+;; point: machine- and employer-identifying details (logins, hostnames, paths
+;; into internal repositories) belong in `local.el', never in the tracked
+;; config, because this repository is public.
+;;
+;; `config.el' loads `local.el' immediately after defining the defaults below,
+;; and skips it without complaint when absent. So a machine that needs no
+;; overrides -- the personal one -- simply has no `local.el' and keeps every
+;; default. Two consequences worth remembering when adding a variable here:
+;;
+;;   1. Give it a working default in `config.el' first. This file may not
+;;      exist, so it can only ever adjust behaviour, not enable it.
+;;   2. Use `setq', not `defvar'. `config.el' has already defined the variable
+;;      by this point, and `defvar' would not overwrite the existing value.
+
+;;; Variables
+
+;; Non-nil marks this as the work machine, which selects GitHub Copilot as the
+;; default agent shell (`SPC o l c') instead of Claude Code. `SPC o l C' still
+;; opens the full picker on either machine.
+;;
+;; Defined in config.el, defaults to nil.
+(setq my/work-machine-p t)
+
+;;; local.el.example ends here
