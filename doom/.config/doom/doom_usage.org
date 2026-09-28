@@ -1,0 +1,98 @@
+#+title: Doom Usage
+
+* Grundläggande navigering
+- =SPC f f= — hitta/öppna en fil (kan även användas för att skapa en
+  ny fil: skriv en sökväg som inte finns, tryck Enter, skriv innehåll
+  och spara)
+- =SPC SPC= — snabbsök och öppna fil i nuvarande projekt (fuzzy find)
+- =SPC f r= — senaste öppnade filer
+- =SPC f s= (eller =C-x C-s=) — spara nuvarande buffer till disk
+- =SPC p p= — lista/växla mellan kända Projectile-projekt
+- =SPC p f= — hitta fil i nuvarande projekt
+- =SPC p i= — invalidera Projectile-cachen (kör efter ändringar i
+  =.projectile=)
+- =SPC /= eller =SPC s p= — sök (grep) efter text i hela projektet
+
+* Fönster (windows)
+- =SPC w l= / =SPC w h= — flytta fokus till fönstret till
+  höger/vänster
+- =SPC w d= (eller =C-x 0=) — stäng nuvarande fönster
+
+* Tabbar och terminaler
+Flikarna hanteras av =centaur-tabs= och grupperas automatiskt efter
+projekt/buffer-typ (t.ex. filer i ett projekt hamnar i en grupp,
+Terminalbuffertar hamnar ofta i en annan grupp eftersom de saknar
+filnamn).
+
+- =Cmd+L= / =Cmd+H= — nästa/föregående flik inom samma grupp
+- =Cmd+Shift+L= / =Cmd+Shift+H= — nästa/föregående flikgrupp (t.ex.
+  hoppa mellan projekt, eller mellan filer och terminaler)
+- =Cmd+T= — öppna en ny terminal (ghostel)
+- =SPC o t= — öppna terminal (ghostel) som popup
+- =SPC o T= — öppna terminal i nuvarande fönster (inte popup)
+- I terminal-fönstret: =SPC w d= stänger fönstret utan att döda
+  processen; =q= stänger ofta popup-fönster
+
+* Magit (Git)
+Magit fungerar utifrån var din nuvarande buffer befinner sig
+(dess =default-directory=). Öppna alltså en fil i rätt repo (t.ex.
+=~/.config/doom/config.org=) innan du kör Magit, annars kan det
+råka öppna fel repo.
+
+** Öppna Magit
+- =SPC g g= — öppnar Magit status för nuvarande projekt/repo
+
+** Stage
+- =s= — stage filen/hunken markören står på
+- =S= (stort S) — stage alla ändringar på en gång
+
+** Commit
+- =c c= — öppna commit-menyn och skriv commit-meddelande
+- =ZZ= (evil, i normal state) — slutför/skicka commiten (motsvarar
+  =C-c C-c=)
+- =ZQ= (evil) — avbryt commit-meddelandet (motsvarar =C-c C-k=)
+
+** Push
+- =P p= — pusha till upstream-branchen
+
+** Visa diff
+- =TAB= på en fil i statusvyn — expandera/fäll ihop diffen inline
+- =S-TAB= — expandera/fäll ihop alla sektioner
+- =d d= — öppna diff i eget fönster (mer läsbart för stora ändringar)
+- =n= / =p= — nästa/föregående hunk i diff-vyn
+- =]= / =[= — nästa/föregående fil i diff-vyn
+- =q= — stäng diff-vyn eller Magit-fönstret
+- =g= — uppdatera/refresh Magit-vyn
+- =l l= — visa commit-log för nuvarande branch
+
+* Om Emacs-notation
+- =C-x= betyder Ctrl+x (håll Ctrl, tryck x)
+- =M-x= betyder Meta+x, dvs Option+x på Mac (öppnar kommandoprompt
+  där du kan skriva valfritt Emacs-kommando, t.ex.
+  =copilot-install-server=)
+- =s-x= betyder Cmd+x på Mac (används för de egna tab-genvägarna
+  ovan)
+- =C-g= avbryter det mesta i Emacs (motsvarar Ctrl+C i andra
+  program) — =C-c= är bara ett prefix och avbryter ingenting själv
+
+* GitHub Copilot
+Inline-completions i kod, aktiverat i alla =prog-mode=-buffertar.
+
+Engångssetup (kör en gång i Emacs):
+- =M-x copilot-install-server= — laddar ner språkservern
+- =M-x copilot-login= — loggar in med GitHub-kontot
+
+Användning:
+- =C-Tab= — acceptera Copilots förslag (ghost text)
+
+* Doom sync
+Kör efter ändringar i =init.el= (moduler) eller =packages.el=
+(paket). Behöver köras från terminalen, inte inifrån Emacs, och
+kräver att Emacs är helt stängt:
+
+#+begin_src sh
+~/.config/emacs/bin/doom sync
+#+end_src
+
+=config.org=-ändringar (bara kodblocken) kräver bara en omstart av
+Emacs, eller =M-x doom/reload=.
