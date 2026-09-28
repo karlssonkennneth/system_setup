@@ -81,9 +81,9 @@ alias vim="nvim"
 alias cat="bat"
 alias fd="fd -u"
 alias rg="rg -u"
-alias l="eza -1a --icons"
-alias ls="eza -1a --icons" 
-alias ll="eza -al --icons"
+alias l="eza -1a --icons=auto"
+alias ls="eza -1a --icons=auto"
+alias ll="eza -al --icons=auto"
 
 
 # Alias for edit files
