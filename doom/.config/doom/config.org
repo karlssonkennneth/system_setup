@@ -224,6 +224,12 @@ buffer-switch hook may not register it. Add it when the shell is initialized
 using Doom's existing workspace helper; this also covers new shells started
 without switching to them.
 
+Color an =agent-shell= tab red while it has a pending ACP permission request.
+Unselected tabs use a stronger red; the selected tab uses a lighter red so its
+selected state remains visible. The status is read when Centaur Tabs displays
+the tab bar, including when it reuses a cached layout. Agent-shell events
+refresh the tab bar when the request appears or is answered.
+
 #+begin_src emacs-lisp
 (defvar my/work-machine-p nil
   "Non-nil on the work machine, where GitHub Copilot replaces Claude.
@@ -231,6 +237,59 @@ Set this in the untracked `local.el'; see `local.el.example'.")
 
 (defvar my/gptel-copilot-host "api.githubcopilot.com"
   "Copilot API host; override in `local.el' if your plan requires it.")
+
+(defface my/agent-shell-tab-waiting
+  '((t (:foreground "white" :background "firebrick" :weight bold)))
+  "Face used for unselected agent-shell tabs waiting for a permission response.")
+
+(defface my/agent-shell-tab-waiting-selected
+  '((t (:foreground "white" :background "#b65f67" :weight bold)))
+  "Face used for the selected agent-shell tab waiting for a permission response.")
+
+(defun my/agent-shell-tab-format-waiting (template)
+  "Color tabs in TEMPLATE red when their agent-shell awaits permission."
+  (cond
+   ((stringp template)
+    (let* ((position (text-property-not-all
+                      0 (length template) 'centaur-tabs-tab nil template))
+           (tab (and position
+                     (get-text-property position 'centaur-tabs-tab template)))
+           (buffer (and tab (centaur-tabs-tab-value tab))))
+      (if (and (buffer-live-p buffer)
+               (with-current-buffer buffer
+                 (and (derived-mode-p 'agent-shell-mode)
+                      (eq (agent-shell-status) 'blocked))))
+          (let* ((selected (and tab
+                                (centaur-tabs-selected-p
+                                 tab (centaur-tabs-tab-tabset tab))))
+                 (face (if selected
+                           'my/agent-shell-tab-waiting-selected
+                         'my/agent-shell-tab-waiting))
+                 (copy (copy-sequence template)))
+            (put-text-property 0 (length copy) 'face face copy)
+            copy)
+        template)))
+   ((consp template)
+    (cons (my/agent-shell-tab-format-waiting (car template))
+          (my/agent-shell-tab-format-waiting (cdr template))))
+   (t template)))
+
+(defun my/agent-shell-refresh-tabs (event)
+  "Refresh tab colors after an agent-shell permission EVENT."
+  (when (memq (map-elt event :event) '(permission-request permission-response))
+    (when (featurep 'centaur-tabs)
+      (centaur-tabs-map-tabsets
+       (lambda (tabset)
+         (centaur-tabs-set-template tabset nil)))
+      (centaur-tabs-display-update))))
+
+(defun my/agent-shell-watch-tab-status ()
+  "Refresh Centaur Tabs when this shell receives or answers a permission request."
+  (dolist (event '(permission-request permission-response))
+    (agent-shell-subscribe-to
+     :shell-buffer (current-buffer)
+     :event event
+     :on-event #'my/agent-shell-refresh-tabs)))
 
 ;; Machine-local overrides live in an untracked `local.el' next to this file,
 ;; so nothing machine-identifying is ever committed. Present only on the work
@@ -247,7 +306,13 @@ Set this in the untracked `local.el'; see `local.el.example'.")
 
 (after! agent-shell
   (when (modulep! :ui workspaces)
-    (add-hook 'agent-shell-mode-hook #'+workspaces-add-current-buffer-h)))
+    (add-hook 'agent-shell-mode-hook #'+workspaces-add-current-buffer-h))
+  (add-hook 'agent-shell-mode-hook #'my/agent-shell-watch-tab-status))
+
+(with-eval-after-load 'centaur-tabs
+  (advice-remove 'centaur-tabs-line-format #'my/agent-shell-tab-format-waiting)
+  (advice-add 'centaur-tabs-line :filter-return
+              #'my/agent-shell-tab-format-waiting))
 
 (defun my/agent-shell-start-default ()
   "Start this machine's default agent shell (Copilot at work, else Claude)."
@@ -261,12 +326,15 @@ Set this in the untracked `local.el'; see `local.el.example'.")
        (:prefix ("l" . "llm")
         :desc (if my/work-machine-p "Copilot agent shell" "Claude agent shell")
         "c" #'my/agent-shell-start-default
-        :desc "Agent shell (choose)" "C" #'agent-shell)))
+        :desc "Agent shell (choose)" "C" #'agent-shell
+        :desc "Open gptel" "l" #'gptel
+        :desc "Send to gptel" "s" #'gptel-send)))
 #+end_src
 
 ** gptel chat
-The =:tools llm= module already installs gptel and binds =SPC o l l= to open a
-chat and =SPC o l s= to send a prompt. Use the same machine-local switch as
+The =:tools llm= module installs gptel. Bind =SPC o l l= explicitly to open a
+chat and =SPC o l s= to send a prompt alongside the agent-shell bindings above.
+Use the same machine-local switch as
 =agent-shell=: GitHub Copilot Chat on the work machine, Anthropic Claude on
 the personal machine. The work machine authenticates via =M-x gptel-gh-login=
 (or on first request); it does not need an API key. For Copilot Business or
