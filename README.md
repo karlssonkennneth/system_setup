@@ -140,6 +140,22 @@ Machines needing no overrides — the personal one — are left alone: with no
 has a working default, and `local.el` only ever changes behaviour, never
 enables it.
 
+### gptel chat
+
+Doom's `:tools llm` module already installs gptel. The same machine-local
+switch selects the default chat backend: Copilot on the work machine, Claude
+on the personal machine. Use `SPC o l l` to open a chat and `SPC o l s` to send.
+
+On the work machine, authorize Copilot when prompted (or run
+`M-x gptel-gh-login`). No API key is needed. If your Copilot plan requires a
+different endpoint, set `my/gptel-copilot-host` in the untracked `local.el`;
+see `local.el.example` for the plan-specific hosts.
+
+On the personal machine, gptel's Claude chat needs an Anthropic **API key**,
+separate from the Claude Code subscription login used by `agent-shell`. Store
+it in `~/.authinfo.gpg` as `machine api.anthropic.com login apikey password
+YOUR_API_KEY` and never in the tracked Doom config.
+
 ## mbsync
 mbsync (isync) syncs email from IMAP servers to a local maildir on disk. Doom Emacs reads email through mu4e, which needs mail stored locally — mbsync is what keeps it in sync.
 

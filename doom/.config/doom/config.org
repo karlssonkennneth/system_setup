@@ -229,6 +229,9 @@ without switching to them.
   "Non-nil on the work machine, where GitHub Copilot replaces Claude.
 Set this in the untracked `local.el'; see `local.el.example'.")
 
+(defvar my/gptel-copilot-host "api.githubcopilot.com"
+  "Copilot API host; override in `local.el' if your plan requires it.")
+
 ;; Machine-local overrides live in an untracked `local.el' next to this file,
 ;; so nothing machine-identifying is ever committed. Present only on the work
 ;; machine; everywhere else the defaults above stand. See `local.el.example'.
@@ -259,4 +262,31 @@ Set this in the untracked `local.el'; see `local.el.example'.")
         :desc (if my/work-machine-p "Copilot agent shell" "Claude agent shell")
         "c" #'my/agent-shell-start-default
         :desc "Agent shell (choose)" "C" #'agent-shell)))
+#+end_src
+
+** gptel chat
+The =:tools llm= module already installs gptel and binds =SPC o l l= to open a
+chat and =SPC o l s= to send a prompt. Use the same machine-local switch as
+=agent-shell=: GitHub Copilot Chat on the work machine, Anthropic Claude on
+the personal machine. The work machine authenticates via =M-x gptel-gh-login=
+(or on first request); it does not need an API key. For Copilot Business or
+Enterprise, set =my/gptel-copilot-host= in the untracked =local.el= if the
+default endpoint is not available for the account.
+
+On the personal machine, gptel's Anthropic backend needs an *Anthropic API
+key*, which is separate from the Claude Code subscription login used by
+=agent-shell=. Store the key in =~/.authinfo.gpg= using the entry
+=machine api.anthropic.com login apikey password YOUR_API_KEY=; never put a key
+in this repository.
+
+#+begin_src emacs-lisp
+(after! gptel
+  (if my/work-machine-p
+      (setq gptel-backend (gptel-make-gh-copilot "Copilot"
+                            :host my/gptel-copilot-host)
+            gptel-model 'gpt-5-mini)
+    (setq gptel-backend (gptel-make-anthropic "Claude"
+                          :stream t
+                          :key #'gptel-api-key-from-auth-source)
+          gptel-model 'claude-sonnet-4-5-20250929)))
 #+end_src

@@ -31,4 +31,11 @@
 ;; Defined in config.el, defaults to nil.
 (setq my/work-machine-p t)
 
+;; Optional: set this if your Copilot plan needs its own API host.
+;; Business: "api.business.githubcopilot.com"
+;; Enterprise: "api.enterprise.githubcopilot.com"
+;; Pro/Pro+: "api.individual.githubcopilot.com"
+;; Defaults to "api.githubcopilot.com".
+;; (setq my/gptel-copilot-host "api.business.githubcopilot.com")
+
 ;;; local.el.example ends here
