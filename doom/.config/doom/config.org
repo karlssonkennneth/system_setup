@@ -126,6 +126,16 @@ and is harmless: enabling an already-enabled mode is a no-op.
 (add-hook 'doom-after-init-hook #'centaur-tabs-mode)
 #+end_src
 
+** Minibuffer input
+Start the minibuffer in Evil insert state, so =SPC := accepts a command without
+first pressing =i=. This also leaves Vertico's arrow and =C-j=/=C-k= navigation
+available while typing.
+
+#+begin_src emacs-lisp
+(after! evil
+  (add-hook 'minibuffer-setup-hook #'evil-insert-state t))
+#+end_src
+
 * Copilot
 GitHub Copilot inline completions, powered by the official
 =@github/copilot-language-server=. Enabled in all programming
