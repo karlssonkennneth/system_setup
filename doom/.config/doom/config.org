@@ -331,6 +331,8 @@ Set this in the untracked `local.el'; see `local.el.example'.")
       (agent-shell-github-start-copilot)
     (agent-shell-anthropic-start-claude-code)))
 
+(map! "s-i" #'gptel-send)
+
 (map! :leader
       (:prefix ("o" . "open")
        (:prefix ("l" . "llm")
@@ -344,6 +346,9 @@ Set this in the untracked `local.el'; see `local.el.example'.")
 ** gptel chat
 The =:tools llm= module installs gptel. Bind =SPC o l l= explicitly to open a
 chat and =SPC o l s= to send a prompt alongside the agent-shell bindings above.
+=Cmd+I= (~s-i~) also sends a prompt from any buffer, in both Evil normal and
+insert states. In a gptel chat buffer, =C-c RET= is the package's default send
+shortcut; =Cmd+I= is a custom binding defined here.
 Use the same machine-local switch as
 =agent-shell=: GitHub Copilot Chat on the work machine, Anthropic Claude on
 the personal machine. The work machine authenticates via =M-x gptel-gh-login=
