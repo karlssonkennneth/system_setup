@@ -46,6 +46,11 @@ history
 fzf
 )
 
+# Give login and non-login shells (e.g. Emacs vterm) the same completion path;
+# otherwise they keep invalidating the shared ~/.zcompdump.
+typeset -U fpath
+fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
+
 source $ZSH/oh-my-zsh.sh
 
 # Needed for fzf R search + plus plugin above
