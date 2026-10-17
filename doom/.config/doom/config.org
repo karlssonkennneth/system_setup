@@ -240,6 +240,14 @@ selected state remains visible. The status is read when Centaur Tabs displays
 the tab bar, including when it reuses a cached layout. Agent-shell events
 refresh the tab bar when the request appears or is answered.
 
+New agent shells start in the current buffer's =default-directory= instead of
+the project root, so the agent works where the buffer lives.
+=M-x my/agent-shell-in-dir= starts a new shell in a directory you pick.
+
+evil-collection binds =g s= in agent-shell buffers to cycling the session mode,
+which shadows Doom's =g s= avy/easymotion prefix. Restore =g s= there and move
+session-mode cycling to =g S= (=C-<tab>= also still cycles in the shell).
+
 #+begin_src emacs-lisp
 (defvar my/work-machine-p nil
   "Non-nil on the work machine, where GitHub Copilot replaces Claude.
@@ -314,10 +322,27 @@ Set this in the untracked `local.el'; see `local.el.example'.")
 (setq agent-shell-preferred-agent-config
       (cons 'preselect (if my/work-machine-p 'copilot 'claude-code)))
 
+(defun my/agent-shell-cwd ()
+  "Use the current buffer's `default-directory' for agent-shell."
+  default-directory)
+
 (after! agent-shell
+  (setq agent-shell-cwd-function #'my/agent-shell-cwd)
   (when (modulep! :ui workspaces)
     (add-hook 'agent-shell-mode-hook #'+workspaces-add-current-buffer-h))
   (add-hook 'agent-shell-mode-hook #'my/agent-shell-watch-tab-status))
+
+(defun my/agent-shell-restore-gs-h (mode &rest _)
+  "Give `g s' back to Doom's easymotion/avy prefix in agent-shell buffers."
+  (when (eq mode 'agent-shell)
+    (dolist (map '(agent-shell-mode-map agent-shell-viewport-edit-mode-map))
+      (evil-collection-define-key 'normal map
+        "gs" nil
+        "gS" #'agent-shell-cycle-session-mode))
+    (evil-collection-define-key 'normal 'agent-shell-viewport-view-mode-map
+      "gs" nil
+      "gS" #'agent-shell-viewport-cycle-session-mode)))
+(add-hook 'evil-collection-setup-hook #'my/agent-shell-restore-gs-h)
 
 (with-eval-after-load 'centaur-tabs
   (advice-remove 'centaur-tabs-line-format #'my/agent-shell-tab-format-waiting)
@@ -330,6 +355,16 @@ Set this in the untracked `local.el'; see `local.el.example'.")
   (if my/work-machine-p
       (agent-shell-github-start-copilot)
     (agent-shell-anthropic-start-claude-code)))
+
+(defun my/agent-shell-in-dir (dir)
+  "Start a new agent shell with DIR as its working directory."
+  (interactive "DKatalog: ")
+  (require 'agent-shell)
+  (let ((dir (file-name-as-directory (expand-file-name dir))))
+    ;; `dlet' forces dynamic binding so agent-shell sees the override.
+    (dlet ((default-directory dir)
+           (agent-shell-cwd-function (lambda () dir)))
+      (agent-shell-new-shell))))
 
 (map! "s-i" #'gptel-send)
 
