@@ -241,6 +241,13 @@ rm ~/.authinfo
 Credentials to add (get passwords from Bitwarden):
 - **Proton Bridge password** — item: `Proton Mail Bridge`
 
+Bridge uses the same password for IMAP (mbsync) and SMTP (mu4e), but each needs its own line:
+
+```
+machine 127.0.0.1 port 1143 login kennethkarlsson81@protonmail.com password BRIDGE_PASSWORD
+machine 127.0.0.1 port 1025 login kennethkarlsson81@protonmail.com password BRIDGE_PASSWORD
+```
+
 ## Search (fd / ripgrep)
 
 ```console
