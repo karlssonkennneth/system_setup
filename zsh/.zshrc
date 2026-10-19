@@ -82,6 +82,7 @@ alias devenv="pipenv shell"
 alias setupenv="pipenv shell"
 
 # Alias for programs replacing standard programs
+alias edit="emacsclient -n"
 alias vim="nvim"
 alias cat="bat"
 alias fd="fd -u"
