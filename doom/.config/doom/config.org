@@ -41,6 +41,22 @@ title bar and borders. Also available as =M-x my/frame-left-half=.
 (add-hook 'window-setup-hook #'my/frame-left-half)
 #+end_src
 
+** Reload files changed on disk
+Doom only reloads a buffer from disk when it is visible or switched to, so
+buffers in background tabs went stale when agents edited the files. Ediff
+then compared the stale buffer instead of the file on disk and showed
+differences that Git did not see (e.g. between the index and working tree
+after staging everything).
+
+=global-auto-revert-mode= reloads every unmodified buffer when its file
+changes. Buffers with unsaved edits are never reverted; if Emacs warns that
+the file changed on disk when saving one, answer no to keep the agent's
+changes.
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+(setq auto-revert-verbose nil)
+#+end_src
+
 * Org
 ** Headers
 #+begin_src emacs-lisp
